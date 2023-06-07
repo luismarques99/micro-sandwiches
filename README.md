@@ -1,4 +1,4 @@
-# Micro Sandwiches
+# :hamburger: Micro Sandwiches
 
 Sandwich selling business app based on microservices
 
