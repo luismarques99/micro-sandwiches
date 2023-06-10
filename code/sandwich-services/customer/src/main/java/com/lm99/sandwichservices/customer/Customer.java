@@ -30,6 +30,7 @@ public class Customer {
 
     private String password;
 
-    private Boolean isActive;
+    @Builder.Default
+    private Boolean active = false;
 
 }

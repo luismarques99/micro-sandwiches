@@ -2,15 +2,13 @@ package com.lm99.sandwichservices.customer;
 
 public interface CustomerService {
 
-    CustomerDefaultResponse getCustomerById(Long id);
+    Customer getCustomerById(Long id);
 
-    CustomerDefaultResponse getCustomerByEmail(String email);
+    Customer getCustomerByEmail(String email);
 
-    CustomerDefaultResponse registerCustomer(CustomerRegistrationRequest request);
+    Customer registerCustomer(Customer customer);
 
 //    Customer updateCustomer(Long id, CustomerUpdateRequest request);
-
-    void deleteCustomer(Long id);
 
     void activateCustomer(Long id);
 

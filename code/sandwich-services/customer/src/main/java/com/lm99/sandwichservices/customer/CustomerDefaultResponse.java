@@ -8,7 +8,9 @@ public record CustomerDefaultResponse(
 
         String lastName,
 
-        String email
+        String email,
+
+        Boolean active
 
 ) {
 }

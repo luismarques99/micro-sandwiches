@@ -1,5 +1,8 @@
 package com.lm99.sandwichservices.customer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public record CustomerMapper() {
 
     public Customer customerRegistrationRequestToCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
@@ -16,7 +19,8 @@ public record CustomerMapper() {
                 customer.getFirstName(),
                 customer.getLastName(),
                 customer.getEmail(),
-                customer.getPassword()
+                customer.getPassword(),
+                customer.getActive()
         );
     }
 

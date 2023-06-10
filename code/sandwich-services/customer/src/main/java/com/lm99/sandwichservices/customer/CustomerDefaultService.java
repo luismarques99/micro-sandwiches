@@ -5,62 +5,58 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public record CustomerDefaultService(CustomerRepository customerRepository,
-                                     CustomerMapper customerMapper) implements CustomerService {
-    // FIXME: CustomerMapper is not able to be injected
+public record CustomerDefaultService(CustomerRepository customerRepository) implements CustomerService {
 
     @Override
-    public CustomerDefaultResponse getCustomerById(Long id) {
+    public Customer getCustomerById(Long id) {
         Customer customer = this.customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
         log.info("Fetching customer with id: {}", id);
-        if (!customer.getIsActive()) {
-            throw new CustomerInactiveException(id);
-        }
-        return this.customerMapper.customerToDefaultCustomerResponse(customer);
+        return customer;
     }
 
     @Override
-    public CustomerDefaultResponse getCustomerByEmail(String email) {
+    public Customer getCustomerByEmail(String email) {
         Customer customer = this.customerRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomerNotFoundException(email));
-        if (!customer.getIsActive()) {
-            throw new CustomerInactiveException(email);
-        }
-        return this.customerMapper.customerToDefaultCustomerResponse(customer);
+        log.info("Fetching customer with email: {}", email);
+        return customer;
     }
 
     @Override
-    public CustomerDefaultResponse registerCustomer(CustomerRegistrationRequest request) {
-        // TODO: Check if email is already in use
-        Customer customer = this.customerMapper.customerRegistrationRequestToCustomer(request);
+    public Customer registerCustomer(Customer customer) {
+        this.validateEmail(customer.getEmail());
+        // TODO: Encrypt password
         this.customerRepository.save(customer);
-        log.info("Saving customer: {}", customer);
-        return this.customerMapper.customerToDefaultCustomerResponse(customer);
-    }
-
-    @Override
-    public void deleteCustomer(Long id) {
-        this.customerRepository.deleteById(id);
-        log.info("Deleting customer with id: {}", id);
+        log.info("Registering customer: {}", customer);
+        return customer;
     }
 
     @Override
     public void activateCustomer(Long id) {
-        Customer customer = this.customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
-        customer.setIsActive(true);
+        Customer customer = this.getCustomerById(id);
+        customer.setActive(true);
         this.customerRepository.save(customer);
         log.info("Activating customer with id: {}", id);
     }
 
     @Override
     public void deactivateCustomer(Long id) {
-        Customer customer = this.customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
-        customer.setIsActive(false);
+        Customer customer = this.getCustomerById(id);
+        customer.setActive(false);
         this.customerRepository.save(customer);
         log.info("Deactivating customer with id: {}", id);
+    }
+
+    private void validateEmail(String email) {
+        // This is not validating if the email is a fraud
+        if (this.emailAlreadyInUse(email)){
+            throw new CustomerEmailAlreadyInUseException(email);
+        }
+    }
+
+    private boolean emailAlreadyInUse(String email) {
+        return this.customerRepository.findByEmail(email).isPresent();
     }
 
 }
