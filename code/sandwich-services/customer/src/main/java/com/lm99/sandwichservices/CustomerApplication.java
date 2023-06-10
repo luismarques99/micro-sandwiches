@@ -1,4 +1,4 @@
-package com.lm99.sandwichservices.customer;
+package com.lm99.sandwichservices;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
