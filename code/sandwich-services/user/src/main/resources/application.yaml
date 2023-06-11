@@ -2,11 +2,11 @@ server:
   port: 8081
 spring:
   application:
-    name: customer
+    name: user
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://homeserverlm99.servebeer.com:8087/sandwichservices_customer?createDatabaseIfNotExist=true
+    url: jdbc:mysql://homeserverlm99.servebeer.com:8087/sandwichservices_user?createDatabaseIfNotExist=true
     password: Admin@123
   jpa:
     properties:
@@ -18,4 +18,5 @@ spring:
 #eureka:
 #  client:
 #    service-url:
-#      defaultZone: http://localhost:8761/eureka
+#      defaultZone: http://localhost:8761/eurekaserver:
+#  port: 8081
