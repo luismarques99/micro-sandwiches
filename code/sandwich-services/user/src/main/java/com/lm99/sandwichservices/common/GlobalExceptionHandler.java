@@ -1,5 +1,10 @@
 package com.lm99.sandwichservices.common;
 
+import com.lm99.sandwichservices.role.RoleNameAlreadyInUseException;
+import com.lm99.sandwichservices.role.RoleNotFoundException;
+import com.lm99.sandwichservices.user.UserEmailAlreadyInUseException;
+import com.lm99.sandwichservices.user.UserNotFoundException;
+import com.lm99.sandwichservices.user.UserUpdateWithEmptyRoleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -24,7 +29,7 @@ public record GlobalExceptionHandler() {
                 exception.getMessage(),
                 Collections.emptyList()
         );
-        return ResponseEntity.badRequest().body(error);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,9 +46,67 @@ public record GlobalExceptionHandler() {
                 exception.getMessage(),
                 errorFields
         );
-        return ResponseEntity.badRequest().body(error);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // TODO: Specify all the other needed exceptions
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<Error> handleRoleNotFoundException(RoleNotFoundException exception) {
+        Error error = new Error(
+                LocalDateTime.now(ZoneId.of("UTC")),
+                HttpStatus.NOT_FOUND.value(),
+                exception.getClass().getSimpleName(),
+                exception.getMessage(),
+                Collections.emptyList()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RoleNameAlreadyInUseException.class)
+    public ResponseEntity<Error> handleRoleNameAlreadyInUseException(RoleNameAlreadyInUseException exception) {
+        Error error = new Error(
+                LocalDateTime.now(ZoneId.of("UTC")),
+                HttpStatus.CONFLICT.value(),
+                exception.getClass().getSimpleName(),
+                exception.getMessage(),
+                Collections.emptyList()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Error> handleUserNotFoundException(UserNotFoundException exception) {
+        Error error = new Error(
+                LocalDateTime.now(ZoneId.of("UTC")),
+                HttpStatus.NOT_FOUND.value(),
+                exception.getClass().getSimpleName(),
+                exception.getMessage(),
+                Collections.emptyList()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserEmailAlreadyInUseException.class)
+    public ResponseEntity<Error> handleUserEmailAlreadyInUseException(UserEmailAlreadyInUseException exception) {
+        Error error = new Error(
+                LocalDateTime.now(ZoneId.of("UTC")),
+                HttpStatus.CONFLICT.value(),
+                exception.getClass().getSimpleName(),
+                exception.getMessage(),
+                Collections.emptyList()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserUpdateWithEmptyRoleException.class)
+    public ResponseEntity<Error> handleUserUpdateWithEmptyRoleException(UserUpdateWithEmptyRoleException exception) {
+        Error error = new Error(
+                LocalDateTime.now(ZoneId.of("UTC")),
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getClass().getSimpleName(),
+                exception.getMessage(),
+                Collections.emptyList()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 }
