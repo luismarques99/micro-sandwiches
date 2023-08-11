@@ -48,6 +48,7 @@ public record UserDefaultService(
             user.setLastName(updatedUser.getLastName());
         }
         if (updatedUser.getEmail() != null) {
+            this.validateUserEmail(updatedUser.getEmail());
             user.setEmail(updatedUser.getEmail());
         }
         if (updatedUser.getPassword() != null) {
